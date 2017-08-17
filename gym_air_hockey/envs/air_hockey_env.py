@@ -1,46 +1,48 @@
 import gym
-from gym import spaces
+import cv2
 import numpy as np
+from gym_air_hockey import AirHockeyProcessor
 
 from air_hockey import AirHockey
 
 class AirHockeyEnv(gym.Env):
-    metadata = {'render.modes': ['human', 'rgb_array']}
-
-    def __init__(self, display_screen=True):
-        self.game = AirHockey()
+    def __init__(self, video_file='reinforcement.avi'):
+        self.game = AirHockey(video_file=video_file)
         
-        self._action_set = np.copy(self.game.actions)
-        self.action_space = spaces.Discrete(9)
+        self._actions = np.array([
+                            [-1, -1],
+                            [-1,  0],
+                            [-1,  1],
+                            [ 0, -1],
+                            [ 0,  0],
+                            [ 0,  1],
+                            [ 1, -1],
+                            [ 1,  0],
+                            [ 1,  1]], 
+                            dtype=np.int8)
+        self.action_space = gym.spaces.Discrete(len(self._actions))
+        self.nb_actions = self.action_space.n
         
         self.screen_width, self.screen_height = 128, 128
-        self.observation_space = spaces.Box(low=0, high=255, shape=(self.screen_width, self.screen_height, 3))
+        self.observation_space = gym.spaces.Box(low=0, high=255, shape=(self.screen_width, self.screen_height, 3))
+        self.reward_range = (-10000.0, 1000.0)
         
         self.viewer = None
 
 
     def _step(self, action_index):
-        state, reward = self.game.step(self._action_set[action_index])
-        terminal = (reward != 0.0)
+        state, reward = self.game.step(self._actions[action_index])
+        state = (cv2.resize(state, (128, 128)).astype(np.float32) - 128)/128
+        
+        
+        terminal = (reward == self.reward_range[0])
+        
+        
         return state, reward, terminal, {}
 
-    @property
-    def _n_actions(self):
-        return len(self._action_set)
-
-    # return: (states, observations)
     def _reset(self):
-        self.observation_space = spaces.Box(low=0, high=255, shape=(self.screen_width, self.screen_height, 3))
         self.game.reset()
-        state = self.game.state
-        return state
-
-    def _render(self, mode='human', close=False):
-        pass
-
-
-    def _seed(self, seed):
-        pass
+        return self.game.state
 
 
 
