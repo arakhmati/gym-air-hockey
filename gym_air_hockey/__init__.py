@@ -1,4 +1,5 @@
-from gym_air_hockey.air_hockey_processor import AirHockeyProcessor
+from gym_air_hockey.processor import DataProcessor
+from gym_air_hockey.model import build_model
 
 from gym.envs.registration import register
 
