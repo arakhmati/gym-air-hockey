@@ -24,16 +24,18 @@ class DataProcessor(object):
         info = self.process_info(info)
         return observation, reward, done, info
     
-    
-
     def resize_observation(self, observation):
         return cv2.resize(observation, (self.dim, self.dim))
 
-    def process_observation(self, observation):
-        observation = self.resize_observation(observation)
+    def normalize_observation(self, observation):
         observation = observation.astype(np.float32)
         observation = observation - 128 # normalize
         observation = observation / 128 # scale
+        return observation
+
+    def process_observation(self, observation):
+        observation = self.resize_observation(observation)
+        observation = self.normalize_observation(observation)
         return observation
 
     def process_reward(self, reward):
