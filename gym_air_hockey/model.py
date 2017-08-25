@@ -2,29 +2,39 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
 from keras.layers.convolutional_recurrent import ConvLSTM2D
 from keras import regularizers
-from keras.layers.wrappers import TimeDistributed
 
-def build_model():
-    
-    l1 = 0.0001
-    l2 = 0.00001
-  
+def conv_model(l1=0.00000, l2=0.00000):
     model = Sequential([
-                ConvLSTM2D(8, 16, activation='relu', name='conv1', input_shape=(None, 128, 128, 3),
-                           kernel_regularizer=regularizers.l1(l1)),
-                Dropout(0.2, name='dropout1'),
-                MaxPooling2D(3, name='pool1'),
-                Conv2D(16, 16, activation='relu', name='conv2', kernel_regularizer=regularizers.l1(l1)),
-                Dropout(0.2, name='dropout2'),
-                MaxPooling2D(3, name='pool2'),
+                Conv2D(8, 12, activation='relu', name='conv1', input_shape=(128, 128, 3)),
+                MaxPooling2D(2, name='pool1'),
+                Conv2D(12, 7, activation='relu', name='conv2'),
+                MaxPooling2D(2, name='pool2'),
+                Conv2D(16, 5, activation='relu', name='conv3'),
+                MaxPooling2D(2, name='pool4'),
                 Flatten(name='flatten'),
-                Dense(256, activation='relu',    name='dense1', kernel_regularizer=regularizers.l1(l1)),
-                Dropout(0.2, name='dropout3'),
-                Dense(128, activation='relu',    name='dense2', kernel_regularizer=regularizers.l1(l1)),
-                Dropout(0.2, name='dropout4'),
-                Dense(64,  activation='relu',    name='dense3', kernel_regularizer=regularizers.l1(l1)),
-                Dropout(0.2, name='dropout5'),
+                Dense(128, activation='relu',    name='dense1'),
+                Dense(512, activation='relu',    name='dense2'),
+                Dense(256, activation='relu',    name='dense3'),
+                Dense(128,  activation='relu',    name='dense4'),
                 Dense(9,   activation='softmax', name='out')
                 ])
-    model.compile(loss='categorical_crossentropy',  optimizer='rmsprop', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy',  optimizer='adam', metrics=['accuracy'])
+    return model
+
+def convlstm_model(l1=0.00000, l2=0.00000):
+    model = Sequential([
+                ConvLSTM2D(8, 12, activation='relu', name='conv1', input_shape=(None, 128, 128, 3)),
+                MaxPooling2D(2, name='pool1'),
+                Conv2D(12, 7, activation='relu', name='conv2'),
+                MaxPooling2D(2, name='pool2'),
+                Conv2D(16, 5, activation='relu', name='conv3'),
+                MaxPooling2D(2, name='pool4'),
+                Flatten(name='flatten'),
+                Dense(512, activation='relu',    name='dense1'),
+                Dense(256, activation='relu',    name='dense2'),
+                Dense(128, activation='relu',    name='dense3'),
+                Dense(64,  activation='relu',    name='dense4'),
+                Dense(9,   activation='softmax', name='out')
+                ])
+    model.compile(loss='categorical_crossentropy',  optimizer='adam', metrics=['accuracy'])
     return model

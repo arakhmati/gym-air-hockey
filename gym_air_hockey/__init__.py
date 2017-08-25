@@ -1,5 +1,5 @@
 from gym_air_hockey.processor import DataProcessor
-from gym_air_hockey.model import build_model
+from gym_air_hockey.model import conv_model, convlstm_model
 
 from gym.envs.registration import register
 

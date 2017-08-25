@@ -22,7 +22,7 @@ class AirHockeyEnv(gym.Env):
 
     def _step(self, action):
         state, reward = self.game.step(action)
-        terminal = (reward == self.reward_range[0])
+        terminal = (reward == self.reward_range[0] or reward == self.reward_range[1])
         return state, reward, terminal, {}
 
     def _reset(self):
