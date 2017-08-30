@@ -21,13 +21,28 @@ class AirHockeyEnv(gym.Env):
 
 
     def _step(self, action):
-        state, reward = self.game.step(action)
-        terminal = (reward == self.reward_range[0] or reward == self.reward_range[1])
+        game_info = self.game.step(action)
+        self.g = game_info
+        
+        state = game_info.frame
+        terminal = game_info.scored is not None
+        
+        reward = 0.0
+        if game_info.puck_was_hit:
+            reward += 1000.0
+        else:
+            reward -= 10000.0
+            
+        if game_info.scored == 'top':
+            reward -= 1000000.0
+        elif game_info.scored == 'bottom':
+            reward += 10000000.0
+        
         return state, reward, terminal, {}
 
     def _reset(self):
         self.game.reset()
-        return self.game.state
+        return self.game.cropped_frame
 
 
 
