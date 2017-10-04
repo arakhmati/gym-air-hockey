@@ -1,1 +1,1 @@
-OpenAI Gym environment wrapper for https://bitbucket.org/akhmed-rakhmati/air-hockey/
+OpenAI Gym environment wrapper for https://github.com/arakhmat/air-hockey/
