@@ -18,5 +18,5 @@ env = gym.make('AirHockey-v0')
 Import the processor (required if using [keras-rl](https://github.com/matthiasplappert/keras-rl)):
 ```
 import gym_air_hockey
-processor=gym_air_hockey.DataProcessor()
+processor = gym_air_hockey.DataProcessor()
 ```
