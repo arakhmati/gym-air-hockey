@@ -7,7 +7,7 @@ I recommend using Anaconda3 Python distribution. You can download it from: [http
 ```
 git clone https://github.com/arakhmat/gym-air-hockey
 cd gym-air-hockey
-pip install .
+pip install -e .
 ```
 ### How to use
 Import the environment:
