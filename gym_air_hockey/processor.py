@@ -1,4 +1,4 @@
-import cv2
+from PIL import Image
 import numpy as np
 
 class DataProcessor(object):
@@ -18,6 +18,9 @@ class DataProcessor(object):
         self.metrics = []
         self.metrics_names = []
 
+        self.frame = np.zeros((3 * 3, self.dim, self.dim), dtype=np.float32)
+
+
     def process_step(self, observation, reward, done, info):
         observation = self.process_observation(observation)
         reward = self.process_reward(reward)
@@ -25,7 +28,10 @@ class DataProcessor(object):
         return observation, reward, done, info
     
     def _resize_observation(self, observation):
-        return cv2.resize(observation, (self.dim, self.dim))
+        observation = Image.fromarray(observation)
+        observation = np.array(observation.resize((self.dim, self.dim)))
+        observation = observation.transpose((2, 0 ,1))
+        return observation
 
     @staticmethod
     def _normalize_observation(observation):
@@ -37,7 +43,10 @@ class DataProcessor(object):
         observation = self._resize_observation(observation)
         observation = observation.astype(np.float32)
         observation = self._normalize_observation(observation)
-        return observation
+        self.frame[2*3:(2+1)*3] = np.copy(self.frame[1*3:(1+1)*3])
+        self.frame[1*3:(1+1)*3] = np.copy(self.frame[0*3:(0+1)*3])
+        self.frame[0*3:(0+1)*3] = np.copy(observation)
+        return self.frame
 
     def process_reward(self, reward):
         return reward
@@ -45,16 +54,24 @@ class DataProcessor(object):
     def process_info(self, info):
         return info
 
-    def process_action(self, action):
-        if isinstance(action, np.ndarray):
-            return action
-        return self.actions[action]
+    def process_action(self, label):
+        # print('process_action label ', label)
+        # print(type(label))
+        if not isinstance(label, int) and not isinstance(label, np.int64):
+            if isinstance(label, np.ndarray):
+                if label.shape[0] == 2:
+                    return label
+                raise TypeError('process_action got wrong argument')
+            else:
+                raise TypeError('process_action got wrong argument')
+        # print('process_action action', self.actions[label])
+        return self.actions[label]
 
     def process_state_batch(self, batch):
-        _, height, width, depth = batch[0].shape
-        batch = np.array(batch).reshape(len(batch), height, width, depth)
+        _, depth, height, width = batch[0].shape
+        batch = np.array(batch).reshape(len(batch), depth, height, width)
         return batch
     
     # Used to generate labels for the neural network
     def action_to_label(self, action):
-        return action[0]*3 + action[1] + 4
+        return int(action[0]*3 + action[1] + 4)
