@@ -35,8 +35,8 @@ class DataProcessor(object):
 
     @staticmethod
     def _normalize_observation(observation):
-        observation = observation - 0 # normalize
-        observation = observation / 256 # scale
+        observation = observation - 128 # normalize
+        observation = observation / 128 # scale
         return observation
 
     def process_observation(self, observation):
@@ -55,8 +55,6 @@ class DataProcessor(object):
         return info
 
     def process_action(self, label):
-        # print('process_action label ', label)
-        # print(type(label))
         if not isinstance(label, int) and not isinstance(label, np.int64):
             if isinstance(label, np.ndarray):
                 if label.shape[0] == 2:
@@ -64,7 +62,6 @@ class DataProcessor(object):
                 raise TypeError('process_action got wrong argument')
             else:
                 raise TypeError('process_action got wrong argument')
-        # print('process_action action', self.actions[label])
         return self.actions[label]
 
     def process_state_batch(self, batch):

@@ -1,7 +1,6 @@
 import gym
 import gym.spaces
 
-import numpy as np
 from air_hockey import AirHockey
 from gym_air_hockey import DataProcessor
 
