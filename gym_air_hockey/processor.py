@@ -13,7 +13,8 @@ class DataProcessor(object):
                             [ 0,  1],
                             [ 1, -1],
                             [ 1,  0],
-                            [ 1,  1]], 
+                            [ 1,  1],
+                            [ 0,  0]], 
                             dtype=np.int8)
         self.metrics = []
         self.metrics_names = []
