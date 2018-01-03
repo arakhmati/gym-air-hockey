@@ -14,7 +14,7 @@ class DataProcessor(object):
                             [ 1, -1],
                             [ 1,  0],
                             [ 1,  1],
-                            [ 0,  0]], 
+                            [ 0,  0]],
                             dtype=np.int8)
         self.metrics = []
         self.metrics_names = []
@@ -27,7 +27,7 @@ class DataProcessor(object):
         reward = self.process_reward(reward)
         info = self.process_info(info)
         return observation, reward, done, info
-    
+
     def _resize_observation(self, observation):
         observation = Image.fromarray(observation)
         observation = np.array(observation.resize((self.dim, self.dim)))
@@ -69,7 +69,7 @@ class DataProcessor(object):
         _, depth, height, width = batch[0].shape
         batch = np.array(batch).reshape(len(batch), depth, height, width)
         return batch
-    
+
     # Used to generate labels for the neural network
     def action_to_label(self, action):
         return int(action[0]*3 + action[1] + 4)
