@@ -19,22 +19,22 @@ class AirHockeyEnv(gym.Env):
 
         self.viewer = None
 
-    def _step(self, action):
-        game_info = self.game.step(action, dt=2)
+    def step(self, action, adversarial_action=None, dt=2):
+        game_info = self.game.step(action=action, adversarial_action=adversarial_action, dt=dt)
 
         state = game_info.frame
         terminal = game_info.scored is not None
 
         reward = 0.0
         if game_info.puck_was_hit:
-            reward = 1.0
+            reward = 5.0
         else:
-            reward = -0.1
+            reward = -1.0
 
         if game_info.scored == 'top':
-            reward -= 10.0
+            reward = -10.0
         elif game_info.scored == 'bottom':
-            reward += 10.0
+            reward = 10.0
 
         return state, reward, terminal, {}
 
