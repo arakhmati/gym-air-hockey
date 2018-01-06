@@ -15,7 +15,7 @@ class AirHockeyEnv(gym.Env):
 
         self.height = self.width = self.processor.dim
         self.observation_space = gym.spaces.Box(low=0, high=255, shape=(9, self.height, self.width))
-        self.reward_range = (-10.0, 10.0)
+        self.reward_range = (-100.0, 100.0)
 
         self.viewer = None
 
@@ -28,13 +28,11 @@ class AirHockeyEnv(gym.Env):
         reward = 0.0
         if game_info.puck_was_hit:
             reward = 5.0
-        else:
-            reward = -1.0
 
         if game_info.scored == 'top':
-            reward = -10.0
+            reward = -100.0
         elif game_info.scored == 'bottom':
-            reward = 10.0
+            reward = 100.0
 
         return state, reward, terminal, {}
 
