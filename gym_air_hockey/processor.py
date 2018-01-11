@@ -56,13 +56,6 @@ class DataProcessor(object):
         return info
 
     def process_action(self, label):
-        if not isinstance(label, int) and not isinstance(label, np.int64):
-            if isinstance(label, np.ndarray):
-                if label.shape[0] == 2:
-                    return label
-                raise TypeError('process_action got wrong argument')
-            else:
-                raise TypeError('process_action got wrong argument')
         return self.actions[label]
 
     def process_state_batch(self, batch):
