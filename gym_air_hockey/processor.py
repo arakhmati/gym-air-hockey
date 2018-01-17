@@ -47,7 +47,7 @@ class DataProcessor(object):
         self.frame[2*3:(2+1)*3] = np.copy(self.frame[1*3:(1+1)*3])
         self.frame[1*3:(1+1)*3] = np.copy(self.frame[0*3:(0+1)*3])
         self.frame[0*3:(0+1)*3] = np.copy(observation)
-        return self.frame
+        return np.copy(self.frame)
 
     def process_reward(self, reward):
         return reward
