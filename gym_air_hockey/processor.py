@@ -71,6 +71,7 @@ class DataProcessor(object):
         return info
 
     def process_action(self, label):
+        if label is None: return None
         return self.actions[label]
 
     def process_state_batch(self, batch):
