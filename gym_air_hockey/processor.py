@@ -43,11 +43,26 @@ class DataProcessor(object):
     def process_observation(self, observation):
         observation = self._resize_observation(observation)
         observation = observation.astype(np.float32)
-        observation = self._normalize_observation(observation)
+
+        # Buffer the frames
         self.frame[2*3:(2+1)*3] = np.copy(self.frame[1*3:(1+1)*3])
         self.frame[1*3:(1+1)*3] = np.copy(self.frame[0*3:(0+1)*3])
         self.frame[0*3:(0+1)*3] = np.copy(observation)
-        return np.copy(self.frame)
+
+        image = np.uint8(self.frame.transpose((1, 2, 0)))
+
+        def rgb2gray(rgb):
+            r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
+            gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
+            return gray
+
+        # Take the difference
+        diff = image[:,:,6:9] - image[:, :, 3:6] - image[:, :, 0:3]
+        gray = rgb2gray(diff)
+
+        gray = self._normalize_observation(gray)
+
+        return np.copy(gray)
 
     def process_reward(self, reward):
         return reward
