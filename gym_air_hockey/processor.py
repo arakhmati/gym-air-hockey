@@ -61,7 +61,7 @@ class DataProcessor(object):
         gray = rgb2gray(diff)
 
         gray = self._normalize_observation(gray)
-
+        gray = gray.reshape(1, 128, 128)
         return np.copy(gray)
 
     def process_reward(self, reward):
@@ -71,7 +71,6 @@ class DataProcessor(object):
         return info
 
     def process_action(self, label):
-        if label is None: return None
         return self.actions[label]
 
     def process_state_batch(self, batch):
