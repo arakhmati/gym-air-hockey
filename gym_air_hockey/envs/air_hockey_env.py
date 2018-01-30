@@ -26,41 +26,37 @@ class AirHockeyEnv(gym.Env):
         state = game_info.frame
         terminal = game_info.scored is not None
         
-        
         action = self.processor.action_to_label(game_info.action)
         adversarial_action = self.processor.action_to_label(game_info.adversarial_action)
 
         # Reward
         reward = 0.0
-        if game_info.puck_was_hit:
-            print('GAME INFO: puck was hit')
-            reward = 0.5
-            
-        if game_info.hit_the_border:
-            print('GAME INFO: hit the border')
-            reward = -0.5
-            
-        if action == 4 or action == 9:
-            print('GAME INFO: standing still')
-            reward = -0.5
-        
-        if game_info.puck_is_at_the_bottom:
-            if game_info.distance_decreased:
-                reward += 0.5
-            else:
-                reward -= 0.5
-        else:
-            if action == 4:
-                reward += 0.5
-            else:
-                reward -= 0.5
-
         if game_info.scored == 'top':
             print('GAME INFO: Goal ☹')
             reward = -1.0
         elif game_info.scored == 'bottom':
             print('GAME INFO: Goal ☺')
             reward = 1.0
+        elif game_info.puck_was_hit:
+            print('GAME INFO: puck was hit ☺')
+            reward = 0.5
+        elif game_info.hit_the_border:
+            print('GAME INFO: hit the border ☹')
+            reward = -0.5
+        elif game_info.puck_is_at_the_bottom:
+            if game_info.distance_decreased:
+                print('GAME INFO: decreased distance ☺')
+                reward = 0.5
+            else:
+                print('GAME INFO: increased distance ☹')
+                reward = -0.5
+        else:
+            if action == 4:
+                print('GAME INFO: stanidng still ☺')
+                reward = 0.5
+            else:
+                print('GAME INFO: not standing still ☹')
+                reward = -0.5
             
         reward = np.clip(reward, -1.0, 1.0)
 
