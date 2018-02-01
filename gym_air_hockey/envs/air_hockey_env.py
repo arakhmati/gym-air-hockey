@@ -73,6 +73,8 @@ class AirHockeyEnv(gym.Env):
         return state, reward, terminal, {'robot_action': robot_action, 'human_action': human_action}
 
     def reset(self):
+        # Reset the environment
+        self.game.reset()
         # Fill in the current_state
         stand_action = self.processor.process_action(4)
         for _ in range(3):
